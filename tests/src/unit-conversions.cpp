@@ -1,10 +1,10 @@
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++ (supporting code)
-// |  |  |__   |  |  | | | |  version 3.11.2
+// |  |  |__   |  |  | | | |  version 3.11.3
 // |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 //
 // Copyright (c) 2013-2022 Niels Lohmann <http://nlohmann.me>.
-// SPDX-FileCopyrightText: 2013-2022 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
 
 // cmake/test.cmake selects the C++ standard versions with which to build a
@@ -1076,19 +1076,19 @@ TEST_CASE("value conversion")
         SECTION("number_float_t")
         {
             auto n = j.get<json::number_float_t>();
-            CHECK(json(n).m_value.number_float == Approx(j.m_value.number_float));
+            CHECK(json(n).m_data.m_value.number_float == Approx(j.m_data.m_value.number_float));
         }
 
         SECTION("float")
         {
             auto n = j.get<float>();
-            CHECK(json(n).m_value.number_float == Approx(j.m_value.number_float));
+            CHECK(json(n).m_data.m_value.number_float == Approx(j.m_data.m_value.number_float));
         }
 
         SECTION("double")
         {
             auto n = j.get<double>();
-            CHECK(json(n).m_value.number_float == Approx(j.m_value.number_float));
+            CHECK(json(n).m_data.m_value.number_float == Approx(j.m_data.m_value.number_float));
         }
 
         SECTION("exception in case of a non-string type")
@@ -1126,19 +1126,19 @@ TEST_CASE("value conversion")
         SECTION("number_float_t")
         {
             json::number_float_t const n = j;
-            CHECK(json(n).m_value.number_float == Approx(j.m_value.number_float));
+            CHECK(json(n).m_data.m_value.number_float == Approx(j.m_data.m_value.number_float));
         }
 
         SECTION("float")
         {
             float const n = j;
-            CHECK(json(n).m_value.number_float == Approx(j.m_value.number_float));
+            CHECK(json(n).m_data.m_value.number_float == Approx(j.m_data.m_value.number_float));
         }
 
         SECTION("double")
         {
             double const n = j;
-            CHECK(json(n).m_value.number_float == Approx(j.m_value.number_float));
+            CHECK(json(n).m_data.m_value.number_float == Approx(j.m_data.m_value.number_float));
         }
     }
 #endif
@@ -1151,7 +1151,7 @@ TEST_CASE("value conversion")
         SECTION("binary_t")
         {
             json::binary_t const b = j.get<json::binary_t>();
-            CHECK(*json(b).m_value.binary == *j.m_value.binary);
+            CHECK(*json(b).m_data.m_value.binary == *j.m_data.m_value.binary);
         }
 
         SECTION("get_binary()")
@@ -1159,14 +1159,14 @@ TEST_CASE("value conversion")
             SECTION("non-const")
             {
                 auto& b = j.get_binary();
-                CHECK(*json(b).m_value.binary == *j.m_value.binary);
+                CHECK(*json(b).m_data.m_value.binary == *j.m_data.m_value.binary);
             }
 
             SECTION("non-const")
             {
                 const json j_const = j;
                 const auto& b = j_const.get_binary();
-                CHECK(*json(b).m_value.binary == *j.m_value.binary);
+                CHECK(*json(b).m_data.m_value.binary == *j.m_data.m_value.binary);
             }
         }
 
@@ -1258,7 +1258,7 @@ TEST_CASE("value conversion")
         SECTION("binary_t")
         {
             json::binary_t const b = j;
-            CHECK(*json(b).m_value.binary == *j.m_value.binary);
+            CHECK(*json(b).m_data.m_value.binary == *j.m_data.m_value.binary);
         }
     }
 #endif

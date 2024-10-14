@@ -1,9 +1,9 @@
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++ (supporting code)
-// |  |  |__   |  |  | | | |  version 3.11.2
+// |  |  |__   |  |  | | | |  version 3.11.3
 // |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 //
-// SPDX-FileCopyrightText: 2013-2022 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
 
 #include "doctest_compatibility.h"
@@ -1124,7 +1124,7 @@ TEST_CASE("MessagePack")
                 // Checking against an expected vector byte by byte is
                 // difficult, because no assumption on the order of key/value
                 // pairs are made. We therefore only check the prefix (type and
-                // size and the overall size. The rest is then handled in the
+                // size) and the overall size. The rest is then handled in the
                 // roundtrip check.
                 CHECK(result.size() == 67); // 1 type, 2 size, 16*4 content
                 CHECK(result[0] == 0xde); // map 16
@@ -1153,7 +1153,7 @@ TEST_CASE("MessagePack")
                 // Checking against an expected vector byte by byte is
                 // difficult, because no assumption on the order of key/value
                 // pairs are made. We therefore only check the prefix (type and
-                // size and the overall size. The rest is then handled in the
+                // size) and the overall size. The rest is then handled in the
                 // roundtrip check.
                 CHECK(result.size() == 458757); // 1 type, 4 size, 65536*7 content
                 CHECK(result[0] == 0xdf); // map 32

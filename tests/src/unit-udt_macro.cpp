@@ -1,9 +1,9 @@
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++ (supporting code)
-// |  |  |__   |  |  | | | |  version 3.11.2
+// |  |  |__   |  |  | | | |  version 3.11.3
 // |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 //
-// SPDX-FileCopyrightText: 2013-2022 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
 
 #include <string>
@@ -18,7 +18,7 @@ namespace persons
 class person_with_private_data
 {
   private:
-    std::string name{};
+    std::string name{}; // NOLINT(readability-redundant-member-init)
     int age = 0;
     json metadata = nullptr;
 
@@ -41,7 +41,7 @@ class person_with_private_data
 class person_with_private_data_2
 {
   private:
-    std::string name{};
+    std::string name{}; // NOLINT(readability-redundant-member-init)
     int age = 0;
     json metadata = nullptr;
 
@@ -77,7 +77,7 @@ class person_with_private_data_2
 class person_without_private_data_1
 {
   public:
-    std::string name{};
+    std::string name{}; // NOLINT(readability-redundant-member-init)
     int age = 0;
     json metadata = nullptr;
 
@@ -99,7 +99,7 @@ class person_without_private_data_1
 class person_without_private_data_2
 {
   public:
-    std::string name{};
+    std::string name{}; // NOLINT(readability-redundant-member-init)
     int age = 0;
     json metadata = nullptr;
 
@@ -121,7 +121,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(person_without_private_data_2, age, name, met
 class person_without_private_data_3
 {
   public:
-    std::string name{};
+    std::string name{}; // NOLINT(readability-redundant-member-init)
     int age = 0;
     json metadata = nullptr;
 
@@ -279,6 +279,44 @@ class person_with_public_alphabet
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(person_with_public_alphabet, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z)
 
+class person_without_default_constructor_1
+{
+  public:
+    std::string name;
+    int age;
+
+    bool operator==(const person_without_default_constructor_1& other) const
+    {
+        return name == other.name && age == other.age;
+    }
+
+    person_without_default_constructor_1(std::string name_, int age_)
+        : name{std::move(name_)}
+        , age{age_}
+    {}
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE(person_without_default_constructor_1, name, age)
+};
+
+class person_without_default_constructor_2
+{
+  public:
+    std::string name;
+    int age;
+
+    bool operator==(const person_without_default_constructor_2& other) const
+    {
+        return name == other.name && age == other.age;
+    }
+
+    person_without_default_constructor_2(std::string name_, int age_)
+        : name{std::move(name_)}
+        , age{age_}
+    {}
+};
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE(person_without_default_constructor_2, name, age)
+
 } // namespace persons
 
 TEST_CASE_TEMPLATE("Serialization/deserialization via NLOHMANN_DEFINE_TYPE_INTRUSIVE and NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE", T,
@@ -409,6 +447,28 @@ TEST_CASE_TEMPLATE("Serialization/deserialization of classes with 26 public/priv
             j2.get_to(obj2);
             bool ok = (obj1 == obj2);
             CHECK(ok);
+        }
+    }
+}
+
+TEST_CASE_TEMPLATE("Serialization of non-default-constructible classes via NLOHMANN_DEFINE_TYPE_INTRUSIVE_ONLY_SERIALIZE and NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_ONLY_SERIALIZE", T,
+                   persons::person_without_default_constructor_1,
+                   persons::person_without_default_constructor_2)
+{
+    SECTION("person")
+    {
+        {
+            // serialization of a single object
+            T person{"Erik", 1};
+            CHECK(json(person).dump() == "{\"age\":1,\"name\":\"Erik\"}");
+
+            // serialization of a container with objects
+            std::vector<T> const two_persons
+            {
+                {"Erik", 1},
+                {"Kyle", 2}
+            };
+            CHECK(json(two_persons).dump() == "[{\"age\":1,\"name\":\"Erik\"},{\"age\":2,\"name\":\"Kyle\"}]");
         }
     }
 }

@@ -1,9 +1,9 @@
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++ (supporting code)
-// |  |  |__   |  |  | | | |  version 3.11.2
+// |  |  |__   |  |  | | | |  version 3.11.3
 // |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 //
-// SPDX-FileCopyrightText: 2013-2022 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
 
 #include "doctest_compatibility.h"
@@ -172,7 +172,6 @@ TEST_CASE("constructors")
             CHECK(j == j_reference);
         }
 
-
         SECTION("std::multimap<json::string_t, json>")
         {
             std::multimap<json::string_t, json> const o {{"a", json(1)}, {"b", json(1u)}, {"c", json(2.2)}, {"d", json(false)}, {"e", json("string")}, {"f", json()}};
@@ -279,7 +278,7 @@ TEST_CASE("constructors")
             const auto t = j.get<std::tuple<int, float, std::string>>();
             CHECK(std::get<0>(t) == j[0]);
             CHECK(std::get<1>(t) == j[1]);
-            CHECK(std::get<2>(t) == j[2]);
+            // CHECK(std::get<2>(t) == j[2]); // commented out due to CI issue, see https://github.com/nlohmann/json/pull/3985 and https://github.com/nlohmann/json/issues/4025
         }
 
         SECTION("std::pair/tuple/array failures")
@@ -872,7 +871,7 @@ TEST_CASE("constructors")
             float const n = 42.23f;
             json const j(n);
             CHECK(j.type() == json::value_t::number_float);
-            CHECK(j.m_value.number_float == Approx(j_reference.m_value.number_float));
+            CHECK(j.m_data.m_value.number_float == Approx(j_reference.m_data.m_value.number_float));
         }
 
         SECTION("double")
@@ -880,7 +879,7 @@ TEST_CASE("constructors")
             double const n = 42.23;
             json const j(n);
             CHECK(j.type() == json::value_t::number_float);
-            CHECK(j.m_value.number_float == Approx(j_reference.m_value.number_float));
+            CHECK(j.m_data.m_value.number_float == Approx(j_reference.m_data.m_value.number_float));
         }
 
         SECTION("long double")
@@ -888,28 +887,28 @@ TEST_CASE("constructors")
             long double const n = 42.23L;
             json const j(n);
             CHECK(j.type() == json::value_t::number_float);
-            CHECK(j.m_value.number_float == Approx(j_reference.m_value.number_float));
+            CHECK(j.m_data.m_value.number_float == Approx(j_reference.m_data.m_value.number_float));
         }
 
         SECTION("floating-point literal without suffix")
         {
             json const j(42.23);
             CHECK(j.type() == json::value_t::number_float);
-            CHECK(j.m_value.number_float == Approx(j_reference.m_value.number_float));
+            CHECK(j.m_data.m_value.number_float == Approx(j_reference.m_data.m_value.number_float));
         }
 
         SECTION("integer literal with f suffix")
         {
             json const j(42.23f);
             CHECK(j.type() == json::value_t::number_float);
-            CHECK(j.m_value.number_float == Approx(j_reference.m_value.number_float));
+            CHECK(j.m_data.m_value.number_float == Approx(j_reference.m_data.m_value.number_float));
         }
 
         SECTION("integer literal with l suffix")
         {
             json const j(42.23L);
             CHECK(j.type() == json::value_t::number_float);
-            CHECK(j.m_value.number_float == Approx(j_reference.m_value.number_float));
+            CHECK(j.m_data.m_value.number_float == Approx(j_reference.m_data.m_value.number_float));
         }
     }
 

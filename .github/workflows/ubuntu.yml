@@ -8,6 +8,9 @@ on:
       - release/*
   pull_request:
   workflow_dispatch:
+  
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
@@ -22,7 +25,7 @@ jobs:
         run: apt-get update ; apt-get install -y git unzip
       - uses: actions/checkout@v3
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v3.27.7
       - name: Run CMake
         run: cmake -S . -B build -DJSON_CI=On
       - name: Build
@@ -59,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v3.27.7
       - name: Run CMake
         run: cmake -S . -B build -DJSON_CI=On
       - name: Build
@@ -76,7 +79,7 @@ jobs:
         run: apt-get update ; apt-get install -y git clang-tools unzip
       - uses: actions/checkout@v3
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v3.27.7
       - name: Run CMake
         run: cmake -S . -B build -DJSON_CI=On
       - name: Build
@@ -93,7 +96,7 @@ jobs:
         run: apt-get update ; apt-get install -y build-essential unzip wget git
       - uses: actions/checkout@v3
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v3.27.7
       - name: Run CMake
         run: cmake -S . -B build -DJSON_CI=On
       - name: Build
@@ -102,6 +105,9 @@ jobs:
   ci_test_coverage:
     runs-on: ubuntu-latest
     container: ghcr.io/nlohmann/json-ci:v2.4.0
+    permissions:
+      contents: read
+      checks: write
     steps:
       - uses: actions/checkout@v3
       - name: Run CMake
@@ -128,7 +134,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v3.27.7
       - name: Run CMake
         run: cmake -S . -B build -DJSON_CI=On
       - name: Build
@@ -145,7 +151,7 @@ jobs:
         run: apt-get update ; apt-get install -y unzip git
       - uses: actions/checkout@v3
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@v3.27.7
       - name: Set env FORCE_STDCPPFS_FLAG for clang 7 / 8 / 9 / 10
         run: echo "JSON_FORCED_GLOBAL_COMPILE_OPTIONS=-DJSON_HAS_FILESYSTEM=0;-DJSON_HAS_EXPERIMENTAL_FILESYSTEM=0" >> "$GITHUB_ENV"
         if: ${{ matrix.compiler == '7' || matrix.compiler == '8' || matrix.compiler == '9' || matrix.compiler == '10' }}
@@ -167,19 +173,35 @@ jobs:
       - name: Build
         run: cmake --build build --target ci_test_compiler_${{ matrix.compiler }}
 
-  ci_test_standards:
+  ci_test_standards_gcc:
     runs-on: ubuntu-latest
     container: ghcr.io/nlohmann/json-ci:v2.4.0
     strategy:
       matrix:
-        standard: [11, 14, 17, 20]
-        compiler: [gcc, clang]
+        standard: [11, 14, 17, 20, 23]
     steps:
       - uses: actions/checkout@v3
       - name: Run CMake
         run: cmake -S . -B build -DJSON_CI=On
       - name: Build
-        run: cmake --build build --target ci_test_${{ matrix.compiler }}_cxx${{ matrix.standard }}
+        run: cmake --build build --target ci_test_gcc_cxx${{ matrix.standard }}
+
+  ci_test_standards_clang:
+    runs-on: ubuntu-latest
+    container: silkeh/clang:latest
+    strategy:
+      matrix:
+        standard: [11, 14, 17, 20, 23]
+    steps:
+      - name: Install git and unzip
+        run: apt-get update ; apt-get install -y git unzip
+      - uses: actions/checkout@v3
+      - name: Get latest CMake and ninja
+        uses: lukka/get-cmake@v3.27.7
+      - name: Run CMake
+        run: cmake -S . -B build -DJSON_CI=On
+      - name: Build
+        run: cmake --build build --target ci_test_clang_cxx${{ matrix.standard }}
 
   ci_cuda_example:
     runs-on: ubuntu-latest

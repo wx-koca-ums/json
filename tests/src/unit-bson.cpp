@@ -1,9 +1,9 @@
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++ (supporting code)
-// |  |  |__   |  |  | | | |  version 3.11.2
+// |  |  |__   |  |  | | | |  version 3.11.3
 // |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 //
-// SPDX-FileCopyrightText: 2013-2022 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
 
 #include "doctest_compatibility.h"
@@ -562,7 +562,7 @@ TEST_CASE("BSON")
         }
     }
 
-    SECTION("Examples from http://bsonspec.org/faq.html")
+    SECTION("Examples from https://bsonspec.org/faq.html")
     {
         SECTION("Example 1")
         {
@@ -918,7 +918,6 @@ TEST_CASE("BSON numerical data")
 
                 }
             }
-
 
             SECTION("signed std::int32_t: INT32_MIN .. INT32_MAX")
             {

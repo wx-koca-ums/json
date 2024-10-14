@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.1...3.14)
 
 ##
 ## PROJECT
 ## name and version
 ##
-project(nlohmann_json VERSION 3.11.2 LANGUAGES CXX)
+project(nlohmann_json VERSION 3.11.3 LANGUAGES CXX)
 
 ##
 ## MAIN_PROJECT CHECK
@@ -122,7 +122,7 @@ target_include_directories(
     ${NLOHMANN_JSON_TARGET_NAME}
     ${NLOHMANN_JSON_SYSTEM_INCLUDE} INTERFACE
     $<BUILD_INTERFACE:${NLOHMANN_JSON_INCLUDE_BUILD_DIR}>
-    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:${NLOHMANN_JSON_INCLUDE_INSTALL_DIR}>
 )
 
 ## add debug view definition file for msvc (natvis)

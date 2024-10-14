@@ -1,9 +1,9 @@
 //     __ _____ _____ _____
 //  __|  |   __|     |   | |  JSON for Modern C++ (supporting code)
-// |  |  |__   |  |  | | | |  version 3.11.2
+// |  |  |__   |  |  | | | |  version 3.11.3
 // |_____|_____|_____|_|___|  https://github.com/nlohmann/json
 //
-// SPDX-FileCopyrightText: 2013-2022 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2013-2023 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
 
 #include "doctest_compatibility.h"
@@ -123,8 +123,7 @@ TEST_CASE("JSON pointers")
             CHECK(j.contains(json::json_pointer("/a~1b")));
             CHECK(j.contains(json::json_pointer("/m~0n")));
 
-            // unescaped access
-            // access to nonexisting values yield object creation
+            // unescaped access to nonexisting values yield object creation
             CHECK(!j.contains(json::json_pointer("/a/b")));
             CHECK_NOTHROW(j[json::json_pointer("/a/b")] = 42);
             CHECK(j.contains(json::json_pointer("/a/b")));
